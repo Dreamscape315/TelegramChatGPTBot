@@ -1,0 +1,2 @@
+revChatGPT~=3.0.9
+python-telegram-bot~=20.1
