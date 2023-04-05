@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="vir" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" serverName="ds空" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="vir">
+      <paths name="ds空">
         <serverdata>
           <mappings>
-            <mapping deploy="/root/bot" local="$PROJECT_DIR$" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

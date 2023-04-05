@@ -30,15 +30,16 @@ async def private(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if os.path.exists(cons):
             chatbot.load(cons)
             message = chatbot.ask(update.message.text)
+
             chatbot.save(cons)
             await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-            chatbot.reset()
+            #chatbot.reset()
         else:
             open(cons, "w", encoding="utf-8")
             message = chatbot.ask(update.message.text)
             chatbot.save(cons)
             await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-            chatbot.reset()
+            #chatbot.reset()
 
 
 async def groupchat(update: Update, context: ContextTypes.DEFAULT_TYPE):

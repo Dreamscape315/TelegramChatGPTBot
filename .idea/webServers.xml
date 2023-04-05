@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="3d3f5254-d4d9-4b83-8753-65fbe459b531" name="vir">
-        <fileTransfer accessType="SFTP" host="47.87.129.74" port="22" sshConfigId="68c63dcc-beef-486a-a47c-56e483de6f15" sshConfig="root@47.87.129.74:22 password">
+      <webServer id="3119ee3d-52e4-46c2-aea0-d5025dc8fb8e" name="ds空">
+        <fileTransfer rootFolder="/root" accessType="SFTP" host="141.147.156.57" port="22" sshConfigId="68c63dcc-beef-486a-a47c-56e483de6f15" sshConfig="root@141.147.156.57:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
