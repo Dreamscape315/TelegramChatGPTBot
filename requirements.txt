@@ -1,2 +1,2 @@
-revChatGPT~=4.1.1.1
+revChatGPT~=6.0.1
 python-telegram-bot~=20.1
