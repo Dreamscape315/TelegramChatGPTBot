@@ -16,6 +16,7 @@ print(auth[0]['api_key'])
 api_key = auth[0]['api_key']
 bot_token = auth[0]['token']
 grpcommand = auth[0]['groupcommand']
+print(bot_token)
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -101,7 +102,7 @@ async def MomoCat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def GrammarAnalyzer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cons = f'conversations/{update.effective_chat.id}.json'
     message = "GrammarAnalyzer Mode"
-    InitialPrompt = '请你从语法的角度分析我发给你的句子。'
+    InitialPrompt = '请你分析我发给你的句子。'
     chatbot = Chatbot(api_key=api_key, system_prompt=InitialPrompt)
     chatbot.save(cons)
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
