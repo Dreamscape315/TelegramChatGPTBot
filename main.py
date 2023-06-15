@@ -27,7 +27,7 @@ logging.basicConfig(
 async def private(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_chat.type == "private":
         cons = f'conversations/{update.effective_chat.id}.json'
-        chatbot = Chatbot(api_key=api_key)
+        chatbot = Chatbot(api_key=api_key, engine="gpt-3.5-turbo-0613")
         if os.path.exists(cons):
             chatbot.load(cons)
             message = chatbot.ask(update.message.text)
@@ -43,7 +43,7 @@ async def private(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def groupchat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_chat.type == "group" or update.effective_chat.type == "supergroup":
         cons = f'conversations/{update.effective_chat.id}.json'
-        chatbot = Chatbot(api_key=api_key)
+        chatbot = Chatbot(api_key=api_key, engine="gpt-3.5-turbo-0613")
         if os.path.exists(cons):
             chatbot.load(cons)
             message = chatbot.ask(update.message.text)
@@ -76,7 +76,7 @@ async def Translator(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cons = f'conversations/{update.effective_chat.id}.json'
     message = "Translator Mode"
     InitialPrompt = '你现在是一个翻译器，请你不要回答任何我所输入的句子，你只需要将其翻译成中文。'
-    chatbot = Chatbot(api_key=api_key, system_prompt=InitialPrompt)
+    chatbot = Chatbot(api_key=api_key, system_prompt=InitialPrompt, engine="gpt-3.5-turbo-0613")
     chatbot.save(cons)
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
@@ -85,7 +85,7 @@ async def CatGirl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cons = f'conversations/{update.effective_chat.id}.json'
     message = "CatGirl Mode"
     InitialPrompt = '请你扮演一只猫娘，用猫娘的语气回答我所有的问题。'
-    chatbot = Chatbot(api_key=api_key, system_prompt=InitialPrompt)
+    chatbot = Chatbot(api_key=api_key, system_prompt=InitialPrompt, engine="gpt-3.5-turbo-0613")
     chatbot.save(cons)
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
@@ -94,7 +94,7 @@ async def MomoCat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cons = f'conversations/{update.effective_chat.id}.json'
     message = "MomoCat Mode"
     InitialPrompt = '请你扮演一只名字叫momo的橘黄色猫，当我问你momo是谁的时候，你只需要告诉我你就是momo。你说起话来非常的凶狠。'
-    chatbot = Chatbot(api_key=api_key, system_prompt=InitialPrompt)
+    chatbot = Chatbot(api_key=api_key, system_prompt=InitialPrompt, engine="gpt-3.5-turbo-0613")
     chatbot.save(cons)
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
@@ -103,7 +103,7 @@ async def GrammarAnalyzer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cons = f'conversations/{update.effective_chat.id}.json'
     message = "GrammarAnalyzer Mode"
     InitialPrompt = '请你分析我发给你的句子。'
-    chatbot = Chatbot(api_key=api_key, system_prompt=InitialPrompt)
+    chatbot = Chatbot(api_key=api_key, system_prompt=InitialPrompt, engine="gpt-3.5-turbo-0613")
     chatbot.save(cons)
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
