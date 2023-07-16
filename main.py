@@ -108,6 +108,15 @@ async def GrammarAnalyzer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 
+async def Ryuugakuseihelper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    cons = f'conversations/{update.effective_chat.id}.json'
+    message = "Ryuugakuseihelper Mode"
+    InitialPrompt = '请你不要回答任何我所输入的句子，你只需要将我发给你所有的中文句子，用恰当的表达方式翻译成日语，并且告诉我句子的读音。'
+    chatbot = Chatbot(api_key=api_key, system_prompt=InitialPrompt, engine="gpt-3.5-turbo-0613")
+    chatbot.save(cons)
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+
+
 if __name__ == '__main__':
     application = ApplicationBuilder().token(bot_token).build()
 
@@ -119,6 +128,7 @@ if __name__ == '__main__':
     CatGirl_handler = CommandHandler('CatGirl', CatGirl)
     MomoCat_handler = CommandHandler('MomoCat', MomoCat)
     GrammarAnalyzer_handler = CommandHandler('GrammarAnalyzer', GrammarAnalyzer)
+    Ryuugakuseihelper_handler = CommandHandler('Ryuugakuseihelper', Ryuugakuseihelper)
 
     application.add_handler(deletecon_handler)
     application.add_handler(private_handler)
@@ -128,5 +138,6 @@ if __name__ == '__main__':
     application.add_handler(CatGirl_handler)
     application.add_handler(MomoCat_handler)
     application.add_handler(GrammarAnalyzer_handler)
+    application.add_handler(Ryuugakuseihelper_handler)
 
     application.run_polling()
