@@ -6,6 +6,8 @@
 ```bash
 git clone https://github.com/Dreamscape315/TelegramChatGPTBot.git
 cd TelegramChatGPTBot
+apt-get install python3
+apt-get install pip
 pip install -r requirements.txt
 ```
 5. edit config.json
