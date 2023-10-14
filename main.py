@@ -67,14 +67,18 @@ async def GroupChat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def PromptModeChange(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print("came in PMC func")
     cons = f'conversations/{update.effective_chat.id}.json'
-    print(update)
-    message = update.message.text[1:] + ' Mode'
-    print(message)
-    InitialPrompt = DictPrompt[update.message.text[1:]]
-    print(InitialPrompt)
+    global PromptCommand
+    global Info
+    if update.effective_chat.type == "group" or update.effective_chat.type == "supergroup":
+        At = update.message.text.rfind("@")
+        PromptCommand = update.message.text[1:At]
+    else:
+        PromptCommand = update.message.text[1:]
+    Info = PromptCommand.capitalize() + ' Mode'
+    InitialPrompt = DictPrompt[PromptCommand]
     chatbot.reset(system_prompt=InitialPrompt)
     chatbot.save(cons)
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=Info)
 
 
 async def Help(update: Update, context: ContextTypes.DEFAULT_TYPE):
