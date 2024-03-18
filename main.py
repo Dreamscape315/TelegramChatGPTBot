@@ -6,13 +6,13 @@ import os
 import json
 
 try:
-    with open("config.json", encoding="utf-8") as f:
+    with open("config/config.json", encoding="utf-8") as f:
         auth = json.loads(f.read())
 except FileNotFoundError:
     print(f"Error: config.json does not exist")
 
 try:
-    with open("Prompts.json", encoding="utf-8") as s:
+    with open("config/Prompts.json", encoding="utf-8") as s:
         prompt = json.loads(s.read())
         DictPrompt = prompt[0]
         promptSet = set(prompt[0])
