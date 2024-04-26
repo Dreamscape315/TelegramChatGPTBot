@@ -1,4 +1,4 @@
-from revChatGPT.V3 import Chatbot
+from Lib.revChatGPT.V3 import Chatbot
 from telegram import Update
 from telegram.ext import filters, MessageHandler, ApplicationBuilder, CommandHandler, ContextTypes
 import logging
@@ -23,7 +23,7 @@ except FileNotFoundError:
 api_key = auth[0]['api_key']
 bot_token = auth[0]['token']
 grpcommand = auth[0]['groupcommand']
-GPT3 = "gpt-3.5-turbo-0613"
+GPT3 = "gpt-3.5-turbo-0125"
 GPT4 = "gpt-4-0613"
 
 chatbot = Chatbot(api_key=api_key, engine=GPT3)
