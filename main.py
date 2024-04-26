@@ -1,4 +1,4 @@
-from revChatGPT.V3 import Chatbot
+from Lib.revChatGPT.V3 import Chatbot
 from telegram import Update
 from telegram.ext import filters, MessageHandler, ApplicationBuilder, CommandHandler, ContextTypes
 import logging
@@ -27,7 +27,7 @@ logging.basicConfig(
 async def private(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_chat.type == "private":
         cons = f'conversations/{update.effective_chat.id}.json'
-        chatbot = Chatbot(api_key=api_key, engine="gpt-3.5-turbo-0613")
+        chatbot = Chatbot(api_key=api_key, engine="gpt-3.5-turbo-0125")
         if os.path.exists(cons):
             chatbot.load(cons)
             message = chatbot.ask(update.message.text)
