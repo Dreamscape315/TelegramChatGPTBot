@@ -35,6 +35,7 @@ ENGINES = [
     "gpt-4-32k-0314",
     "gpt-4-0613",
     "gpt-4-32k-0613",
+    "gpt-4o",
 ]
 
 
@@ -166,7 +167,8 @@ class Chatbot:
             # every message follows <im_start>{role/name}\n{content}<im_end>\n
             num_tokens += 5
             for key, value in message.items():
-                num_tokens += len(encoding.encode(value))
+                if isinstance(value, str):
+                    num_tokens += len(encoding.encode(value))
                 if key == "name":  # if there's a name, the role is omitted
                     num_tokens += 5  # role is always required and always 1 token
         num_tokens += 5  # every reply is primed with <im_start>assistant
@@ -195,7 +197,7 @@ class Chatbot:
         self.__truncate_conversation(convo_id=convo_id)
         # Get response
         response = self.session.post(
-            os.environ.get("API_URL") or "https://api.openai.com/v1/chat/completions",
+            os.environ.get("API_URL") or "https://m.gptapi.us/v1/chat/completions",
             headers={"Authorization": f"Bearer {kwargs.get('api_key', self.api_key)}"},
             json={
                 "model": self.engine,
@@ -265,7 +267,7 @@ class Chatbot:
         # Get response
         async with self.aclient.stream(
             "post",
-            os.environ.get("API_URL") or "https://api.openai.com/v1/chat/completions",
+            os.environ.get("API_URL") or "https://m.gptapi.us/v1/chat/completions",
             headers={"Authorization": f"Bearer {kwargs.get('api_key', self.api_key)}"},
             json={
                 "model": self.engine,
