@@ -1,6 +1,6 @@
 from Lib.revChatGPT.V3 import Chatbot
-from telegram import Update
-from telegram.ext import filters, MessageHandler, ApplicationBuilder, CommandHandler, ContextTypes
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import filters, MessageHandler, ApplicationBuilder, CommandHandler, ContextTypes, CallbackQueryHandler
 import logging
 import os
 import json
@@ -20,13 +20,15 @@ try:
 except FileNotFoundError:
     print(f"Error: Prompts.json does not exist")
 
-api_key = auth[0]['api_key']
+api_key = auth[0]['api_key3'] if auth[0]['engine'] == "3" else auth[0]['api_key4']
+
 bot_token = auth[0]['token']
 grpcommand = auth[0]['groupcommand']
-GPT3 = "gpt-3.5-turbo-0125"
-GPT4 = "gpt-4-0613"
 
-chatbot = Chatbot(api_key=api_key, engine=GPT3)
+engine = auth[0]['gpt3'] if auth[0]['engine'] == "3" else auth[0]['gpt4']
+print(engine + " engine")
+
+chatbot = Chatbot(api_key=api_key, engine=engine)
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -39,13 +41,34 @@ async def Private(update: Update, context: ContextTypes.DEFAULT_TYPE):
         cons = f'conversations/{update.effective_chat.id}.json'
         if os.path.exists(cons):
             chatbot.load(cons)
-            message = chatbot.ask(update.message.text)
-            chatbot.save(cons)
-            await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
         else:
             open(cons, "w", encoding="utf-8")
-            message = chatbot.ask(update.message.text)
-            chatbot.save(cons)
+        message = chatbot.ask(update.message.text)
+        chatbot.save(cons)
+        keyboard = [
+            [InlineKeyboardButton("重置会话", callback_data="1")],
+        ]
+
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=message, reply_markup=reply_markup)
+
+
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Parses the CallbackQuery and updates the message text."""
+    query = update.callback_query
+
+    # CallbackQueries need to be answered, even if no notification to the user is needed
+    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
+    await query.answer()
+    if query.data == "1":
+        cons = f'conversations/{update.effective_chat.id}.json'
+        if os.path.exists(cons):
+            os.remove(cons)
+            message = "Conversation deleted"
+            await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+        else:
+            message = "No conversations"
             await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 
@@ -54,14 +77,11 @@ async def GroupChat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         cons = f'conversations/{update.effective_chat.id}.json'
         if os.path.exists(cons):
             chatbot.load(cons)
-            message = chatbot.ask(update.message.text)
-            chatbot.save(cons)
-            await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
         else:
             open(cons, "w", encoding="utf-8")
-            message = chatbot.ask(update.message.text)
-            chatbot.save(cons)
-            await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+        message = chatbot.ask(update.message.text)
+        chatbot.save(cons)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 
 async def PromptModeChange(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -105,6 +125,8 @@ if __name__ == '__main__':
     PromptModeChange_Handler = CommandHandler(PromptFrozenSet, PromptModeChange)
     Help_Handler = CommandHandler('help', Help)
     Deletecon_Handler = CommandHandler('deletemycons', Deletecons)
+
+    application.add_handler(CallbackQueryHandler(button))
 
     application.add_handler(PrivateChat_Handler)
     application.add_handler(GroupChat_Handler)
