@@ -38,6 +38,7 @@ logging.basicConfig(
 
 async def Private(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_chat.type == "private":
+        chatbot = Chatbot(api_key=api_key, engine=engine)
         cons = f'conversations/{update.effective_chat.id}.json'
         if os.path.exists(cons):
             chatbot.load(cons)
@@ -74,6 +75,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def GroupChat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_chat.type == "group" or update.effective_chat.type == "supergroup":
+        chatbot = Chatbot(api_key=api_key, engine=engine)
         cons = f'conversations/{update.effective_chat.id}.json'
         if os.path.exists(cons):
             chatbot.load(cons)
