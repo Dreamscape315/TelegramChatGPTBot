@@ -1,10 +1,10 @@
-# TelegramChatGPTBot
+# TelegramChatGPTBot 
 ## Setup
 1. Get your [OpenAI API](https://openai.com/api/) key
 2. Get your Telegram bot token from [@BotFather](https://t.me/BotFather)
 3. Clone 
 ```bash
-git clone https://github.com/Dreamscape315/TelegramChatGPTBot.git
+git clone -b Prompt-Feature https://github.com/Dreamscape315/TelegramChatGPTBot.git
 cd TelegramChatGPTBot
 apt-get install python3
 apt-get install pip

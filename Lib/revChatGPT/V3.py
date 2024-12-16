@@ -45,33 +45,35 @@ except FileNotFoundError:
     print(f"Error: config.json does not exist")
 
 endpoint = auth[0]['endpoint3'] if auth[0]['engine'] == "3" else auth[0]['endpoint4']
+
 model = auth[0]['gpt3'] if auth[0]['engine'] == "3" else auth[0]['gpt4']
+
 print(endpoint)
 class Chatbot:
     """
     Official ChatGPT API
     """
     def __init__(
-        self,
-        api_key: str,
-        engine: str = os.environ.get("GPT_ENGINE") or model,
+            self,
+            api_key: str,
+            engine: str = os.environ.get("GPT_ENGINE") or model,
 
-        proxy: str = None,
-        timeout: float = None,
-        max_tokens: int = None,
-        temperature: float = 0.5,
-        top_p: float = 1.0,
-        presence_penalty: float = 0.0,
-        frequency_penalty: float = 0.0,
-        reply_count: int = 1,
-        truncate_limit: int = None,
-        system_prompt: str = "You are ChatGPT, a large language model trained by OpenAI. Respond conversationally",
+            proxy: str = None,
+            timeout: float = None,
+            max_tokens: int = None,
+            temperature: float = 0.5,
+            top_p: float = 1.0,
+            presence_penalty: float = 0.0,
+            frequency_penalty: float = 0.0,
+            reply_count: int = 1,
+            truncate_limit: int = None,
+            system_prompt: str = "You are ChatGPT, a large language model trained by OpenAI. Respond conversationally",
     ) -> None:
         """
         Initialize Chatbot with API key (from https://platform.openai.com/account/api-keys)
         """
         self.engine: str = engine
-        print("engine isssssss")
+        print("engine name:")
         print(self.engine)
         self.api_key: str = api_key
         self.system_prompt: str = system_prompt
@@ -108,7 +110,7 @@ class Chatbot:
             },
         )
         if proxy := (
-            proxy or os.environ.get("all_proxy") or os.environ.get("ALL_PROXY") or None
+                proxy or os.environ.get("all_proxy") or os.environ.get("ALL_PROXY") or None
         ):
             if "socks5h" not in proxy:
                 self.aclient = httpx.AsyncClient(
@@ -136,10 +138,10 @@ class Chatbot:
             raise t.ActionRefuseError("System prompt is too long")
 
     def add_to_conversation(
-        self,
-        message: str,
-        role: str,
-        convo_id: str = "default",
+            self,
+            message: str,
+            role: str,
+            convo_id: str = "default",
     ) -> None:
         """
         Add a message to the conversation
@@ -152,8 +154,8 @@ class Chatbot:
         """
         while True:
             if (
-                self.get_token_count(convo_id) > self.truncate_limit
-                and len(self.conversation[convo_id]) > 1
+                    self.get_token_count(convo_id) > self.truncate_limit
+                    and len(self.conversation[convo_id]) > 1
             ):
                 # Don't remove the first message
                 self.conversation[convo_id].pop(1)
@@ -192,13 +194,13 @@ class Chatbot:
         return self.max_tokens - self.get_token_count(convo_id)
 
     def ask_stream(
-        self,
-        prompt: str,
-        role: str = "user",
-        convo_id: str = "default",
-        model: str = None,
-        pass_history: bool = True,
-        **kwargs,
+            self,
+            prompt: str,
+            role: str = "user",
+            convo_id: str = "default",
+            model: str = None,
+            pass_history: bool = True,
+            **kwargs,
     ):
         print("came in ask_stream")
         print("now moedl is", model)
@@ -215,16 +217,16 @@ class Chatbot:
         if os.environ.get("API_URL") and os.environ.get("MODEL_NAME"):
             # https://learn.microsoft.com/en-us/azure/cognitive-services/openai/chatgpt-quickstart?tabs=command-line&pivots=rest-api
             url = (
-                os.environ.get("API_URL")
-                + "openai/deployments/"
-                + os.environ.get("MODEL_NAME")
-                + "/chat/completions?api-version=2023-05-15"
+                    os.environ.get("API_URL")
+                    + "openai/deployments/"
+                    + os.environ.get("MODEL_NAME")
+                    + "/chat/completions?api-version=2023-05-15"
             )
             headers = {"Content-Type": "application/json", "api-key": self.api_key}
         else:
             url = (
-                os.environ.get("API_URL")
-                or endpoint
+                    os.environ.get("API_URL")
+                    or endpoint
             )
 
             # if auth[0]['engine'] == "4":
@@ -286,6 +288,8 @@ class Chatbot:
                 continue
             if "role" in delta:
                 response_role = delta["role"]
+            else:
+                response_role = "assistant"
             if "content" in delta:
                 content = delta["content"]
                 full_response += content
@@ -293,13 +297,13 @@ class Chatbot:
         self.add_to_conversation(full_response, response_role, convo_id=convo_id)
 
     async def ask_stream_async(
-        self,
-        prompt: str,
-        role: str = "user",
-        convo_id: str = "default",
-        model: str = None,
-        pass_history: bool = True,
-        **kwargs,
+            self,
+            prompt: str,
+            role: str = "user",
+            convo_id: str = "default",
+            model: str = None,
+            pass_history: bool = True,
+            **kwargs,
     ) -> AsyncGenerator[str, None]:
         print("came in ask_stream_async")
         """
@@ -312,32 +316,32 @@ class Chatbot:
         self.__truncate_conversation(convo_id=convo_id)
         # Get response
         async with self.aclient.stream(
-            "post",
-            os.environ.get("API_URL") or endpoint,
-            headers={"Authorization": f"Bearer {kwargs.get('api_key', self.api_key)}"},
-            json={
-                "model": model or self.engine,
-                "messages": self.conversation[convo_id] if pass_history else [prompt],
-                "stream": True,
-                # kwargs
-                "temperature": kwargs.get("temperature", self.temperature),
-                "top_p": kwargs.get("top_p", self.top_p),
-                "presence_penalty": kwargs.get(
-                    "presence_penalty",
-                    self.presence_penalty,
-                ),
-                "frequency_penalty": kwargs.get(
-                    "frequency_penalty",
-                    self.frequency_penalty,
-                ),
-                "n": kwargs.get("n", self.reply_count),
-                "user": role,
-                "max_tokens": min(
-                    self.get_max_tokens(convo_id=convo_id),
-                    kwargs.get("max_tokens", self.max_tokens),
-                ),
-            },
-            timeout=kwargs.get("timeout", self.timeout),
+                "post",
+                os.environ.get("API_URL") or endpoint,
+                headers={"Authorization": f"Bearer {kwargs.get('api_key', self.api_key)}"},
+                json={
+                    "model": model or self.engine,
+                    "messages": self.conversation[convo_id] if pass_history else [prompt],
+                    "stream": True,
+                    # kwargs
+                    "temperature": kwargs.get("temperature", self.temperature),
+                    "top_p": kwargs.get("top_p", self.top_p),
+                    "presence_penalty": kwargs.get(
+                        "presence_penalty",
+                        self.presence_penalty,
+                    ),
+                    "frequency_penalty": kwargs.get(
+                        "frequency_penalty",
+                        self.frequency_penalty,
+                    ),
+                    "n": kwargs.get("n", self.reply_count),
+                    "user": role,
+                    "max_tokens": min(
+                        self.get_max_tokens(convo_id=convo_id),
+                        kwargs.get("max_tokens", self.max_tokens),
+                    ),
+                },
+                timeout=kwargs.get("timeout", self.timeout),
         ) as response:
             if response.status_code != 200:
                 await response.aread()
@@ -373,13 +377,13 @@ class Chatbot:
         self.add_to_conversation(full_response, response_role, convo_id=convo_id)
 
     async def ask_async(
-        self,
-        prompt: str,
-        role: str = "user",
-        convo_id: str = "default",
-        model: str = None,
-        pass_history: bool = True,
-        **kwargs,
+            self,
+            prompt: str,
+            role: str = "user",
+            convo_id: str = "default",
+            model: str = None,
+            pass_history: bool = True,
+            **kwargs,
     ) -> str:
         """
         Non-streaming ask
@@ -394,13 +398,13 @@ class Chatbot:
         return full_response
 
     def ask(
-        self,
-        prompt: str,
-        role: str = "user",
-        convo_id: str = "default",
-        model: str = None,
-        pass_history: bool = True,
-        **kwargs,
+            self,
+            prompt: str,
+            role: str = "user",
+            convo_id: str = "default",
+            model: str = None,
+            pass_history: bool = True,
+            **kwargs,
     ) -> str:
         """
         Non-streaming ask
@@ -460,10 +464,10 @@ class Chatbot:
             keys = get_filtered_keys_from_object(self, *keys_)
 
             if (
-                "session" in keys
-                and loaded_config["session"]
-                or "proxy" in keys
-                and loaded_config["proxy"]
+                    "session" in keys
+                    and loaded_config["session"]
+                    or "proxy" in keys
+                    and loaded_config["proxy"]
             ):
                 self.proxy = loaded_config.get("session", loaded_config["proxy"])
                 self.session = httpx.Client(
@@ -736,8 +740,8 @@ def main() -> NoReturn:
             try:
                 chatbot.handle_commands(prompt)
             except (
-                requests.exceptions.Timeout,
-                requests.exceptions.ConnectionError,
+                    requests.exceptions.Timeout,
+                    requests.exceptions.ConnectionError,
             ) as err:
                 print(f"Error: {err}")
                 continue
